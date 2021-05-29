@@ -79,7 +79,7 @@ namespace Umg.Web.Controllers
 
         }
 
-        //POst api/Categorias
+     
         [HttpPost]
         public async Task<ActionResult<articulo>> Postarticulo(articulo articulo)
         {

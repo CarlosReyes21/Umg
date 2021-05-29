@@ -22,14 +22,13 @@ namespace Umg.Web.Controllers
 
 
         }
-        //GET api/
         [HttpGet]
         public async Task<ActionResult<IEnumerable<articulo>>> Getarticulo()
         {
             return await _context.Articulos.ToListAsync();
         }
 
-        // GET api/
+        
         [HttpGet("{idarticulo}")]
 
         public async Task<ActionResult<articulo>> Getarticulo(int id)
@@ -79,7 +78,7 @@ namespace Umg.Web.Controllers
 
         }
 
-        //POst api/Categorias
+        
         [HttpPost]
         public async Task<ActionResult<articulo>> PostCategoria(articulo articulo)
         {

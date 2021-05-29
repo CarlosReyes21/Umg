@@ -1,87 +1,113 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Umg.Datos;
+using Umg.Entidades.Ventas;
 
-namespace Umg.Web.Controllers  
+namespace Umg.Web.Controllers
 {
-    public class DetalleIngresoController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DetalleIngresoController : ControllerBase
     {
-        // GET: DetalleIngreso
-        public ActionResult Index()
+        private readonly DbContextSistema _context;
+
+        public DetalleIngresoController(DbContextSistema context)
         {
-            return View();
+            _context = context;
         }
 
-        // GET: DetalleIngreso/Details/5
-        public ActionResult Details(int id)
+        //GET api/Categorias
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<detalleIngreso>>> GetCategorias()
         {
-            return View();
+            return await _context.DetallesIngresos.ToListAsync();
         }
 
-        // GET: DetalleIngreso/Create
-        public ActionResult Create()
+        // GET api/Categorias/2
+        [HttpGet("{idDetalleIngreso")]
+
+        public async Task<ActionResult<detalleIngreso>> GetdetalleIngreso(int id)
         {
-            return View();
+            var detalleIngreso = await _context.DetallesIngresos.FindAsync(id);
+
+            if (detalleIngreso == null)
+            {
+                return NotFound();
+            }
+
+            return detalleIngreso;
         }
 
-        // POST: DetalleIngreso/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+
+      
+        [HttpPut("idDetalleIngreso")]
+        public async Task<IActionResult> putdetalleIngreso(int id, detalleIngreso detalleIngreso)
         {
+            if (id != detalleIngreso.idDetalleIngreso)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(detalleIngreso).State = EntityState.Modified;
+
             try
             {
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            catch
+            catch (DbUpdateConcurrencyException)
             {
-                return View();
+
+                if (!DetalleIngresoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+
             }
+
+            return NoContent();
+
         }
 
-        // GET: DetalleIngreso/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
 
-        // POST: DetalleIngreso/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult<detalleIngreso>> PostdetalleIngrso(detalleIngreso detalleIngreso)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _context.DetallesIngresos.Add(detalleIngreso);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("getdetalleIngreso", new { id = detalleIngreso }, detalleIngreso);
         }
 
-        // GET: DetalleIngreso/Delete/5
-        public ActionResult Delete(int id)
+ 
+
+        [HttpDelete("idDetalleIngreso")]
+        public async Task<ActionResult<detalleIngreso>> DeletedetalleIngrso(int id)
         {
-            return View();
+            var detalleIngreso = await _context.DetallesIngresos.FindAsync(id);
+
+            if (detalleIngreso == null)
+            {
+                return NotFound();
+            }
+
+            _context.DetallesIngresos.Remove(detalleIngreso);
+            await _context.SaveChangesAsync();
+
+            return detalleIngreso;
         }
 
-        // POST: DetalleIngreso/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        private bool DetalleIngresoExists(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return _context.DetallesIngresos.Any(e => e.idDetalleIngreso == id);
         }
     }
+
 }
