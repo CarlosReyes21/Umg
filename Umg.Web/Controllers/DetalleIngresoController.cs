@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Umg.Web.Controllers
+namespace Umg.Web.Controllers 
 {
     public class DetalleIngresoController : Controller
     {
